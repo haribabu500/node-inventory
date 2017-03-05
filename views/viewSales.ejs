@@ -1,0 +1,62 @@
+<% include templates/header.ejs %>
+
+ <!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+<% if(message!=''){%>
+    <div id="danger-alert" class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-check"></i> Success!</h4>
+    Successfully Removed Item.
+    </div>
+    <script>
+        $("#danger-alert").fadeTo(2000,500).slideUp(500,function(){
+            $("#danger-alert").slideUp(500);
+        });
+    </script>
+<%} %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="salesTable" class="table table-bordered table-striped dataTable" role="grid" style="border: 1px solid #ccc!important;">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(i=0;i<sales.length;i++){%>
+                        <tr>
+                            <td><%=sales[i].id %></td>
+                            <td><%=sales[i].date %></td>
+                            <td><%=sales[i].customer_info %></td>
+                            <td><%=sales[i].amount %></td>
+                            
+                            <td><a href="/viewInvoice?id=<%=sales[i].id %>">View Invoice</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+<script>
+    $(function() {
+        $('#salesTable').DataTable({
+            "paging" : true,
+            "lengthChange" : false,
+            "searching" : true,
+            "ordering" : false,
+            "info" : true,
+            "autoWidth" : false
+        });
+    });
+</script>
+</div>
+  <!-- /.content-wrapper -->
+<% include templates/footer.ejs %>

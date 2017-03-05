@@ -1,0 +1,62 @@
+<% include templates/header.ejs %>
+ <!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="itemsTable" class="table table-bordered table-striped dataTable" role="grid" style="border: 1px solid #ccc!important;">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                        
+                        
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <% var total=0;%>
+                    <% for(i=0;i<items.length;i++){
+                        total+=items[i].price*items[i].quantity; %>
+                        <tr>
+                            <td><%=items[i].id %></td>
+                            <td><%=items[i].name %></td>
+                            <td><%=items[i].quantity %></td>
+                            <td><%=items[i].price %></td>
+                            <td><%=items[i].price*items[i].quantity %></td>
+                         
+                         
+                            
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <td style="text-align: right;" colspan="4"><b>Total</b></td>
+                        <td><b><%=total %></b></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+
+<script>
+    $(function() {
+        // $('#itemsTable').DataTable({
+        //     "paging" : true,
+        //     "lengthChange" : false,
+        //     "searching" : true,
+        //     "ordering" : true,
+        //     "info" : true,
+        //     "autoWidth" : false
+        // });
+    });
+</script>
+</div>
+  <!-- /.content-wrapper -->
+
+<% include templates/footer.ejs %>

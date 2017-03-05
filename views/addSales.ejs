@@ -1,0 +1,184 @@
+<% include templates/header.ejs %>
+ <!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+         <% if(message!=''){%>
+            <div id="success-alert" class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-check"></i> Success!</h4>
+            Successfully Added Sales.
+            </div>
+            <script>
+                $("#success-alert").fadeTo(2000,500).slideUp(500,function(){
+                    $("#success-alert").slideUp(500);
+                });
+            </script>
+        <%} %>
+        <div class="container">
+                <div class="row">
+                <div class="col-sm-6">
+                   <div class="box box-info">
+                        <div class="box-header with-border">
+                        <h3 class="box-title">Search Items </h3>
+                        
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="input-group input-group-sm">
+                                <input id="search_item_field" type="text" class="form-control" placeholder="Search Items" >
+                                    <span class="input-group-btn">
+                                    <button id="search_item_button" type="button" class="btn btn-info btn-flat">Go!</button>
+                                    </span>
+                                    <script>
+                                        var total_amount=0;
+                                        function searhItem(){
+                                            $.ajax({
+                                                url:'getItemAjax/'+$("#search_item_field").val(),
+                                                success:function(data){
+                                                    // console.log(data);
+                                                    // alert(data[0].name);
+                                                    var tr="<table class='table'>";
+                                                    tr += "<tr>";
+                                                    tr += "<th>Id</th>";
+                                                    tr += "<th>Name</th>";
+                                                    tr += "<th>Price</th>";
+                                                    tr += "<th>Quantity</th>";
+                                                    tr += "<th></th>";
+                                                    tr += "</tr>";
+                                                     $.each(data, function(i, item) {
+                                                         tr += "<tr>";
+                                                         tr += "<td class='id'>"+item.id+"</td>";
+                                                         tr += "<td class='name'>"+item.name+"</td>";
+                                                         tr += "<td class='price'>"+item.price+"</td>";
+                                                         tr += "<td class='quantity'><input type='text' value='1' ></td>";
+                                                         tr += "<td><button class='btn btn-success add_to_cart' onClick='addToCart(this)'>Add To Cart</button></td>";
+                                                         tr += "</tr>";
+                                                        
+                                                       
+                                                    });
+                                                    tr+="</table>";
+                                                    // console.log(tr);
+                                                    
+                                                    $("#results_table").html(tr);
+                                                },
+                                                error:function(err){
+                                                    alert("Oops.. something went wrong..");
+                                                }
+                                            });
+                                        }
+                                        $("#search_item_button").click(function(){
+                                            searhItem();
+                                        });
+                                        $("#search_item_field").on('keyup', function (e) {
+                                            if (e.keyCode == 13) {
+                                                searhItem();
+                                            }
+                                        });
+
+                                        $(".add_to_cart").on('click',function(){
+                                            // alert('test');
+                                            // console.log($(this).parent().closest('.name').html());
+                                        });
+                                        function addToCart(elem){
+                                            var id=$(elem).parent().parent().find('.id').html();
+                                            var name=$(elem).parent().parent().find('.name').html();
+                                            var price=$(elem).parent().parent().find('.price').html();
+                                            var quantity=$(elem).parent().parent().find('.quantity').find('input').val();
+                                            
+                                            var row="<tr>";
+                                            row +="<td>"+id+"<input type='hidden' name='id[]' value='"+id+"'</td>";
+                                            row +="<td>"+name+"<input type='hidden' name='name[]' value='"+name+"'</td>";
+                                            row +="<td>"+quantity+"<input type='hidden' name='quantity[]' value='"+quantity+"'</td>";
+                                            row +="<td>"+price+"<input type='hidden' name='price[]' value='"+price+"'</td>";
+                                            row +="<td>"+quantity*price+"</td>";
+                                            row +="</tr>";
+                                            $("#billing_table tbody").append(row);
+                                            total_amount=total_amount+(quantity*price);
+                                            $("#total_amount").html(total_amount);
+                                            $("#form_total_amount").val(total_amount);
+                                            
+                                        }
+                                    </script>
+                            </div>
+                            
+                            <div id="results_table" class="table-responsive">
+                                
+                            </div>
+                            
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer clearfix">
+                        <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+                        </div>
+                        <!-- /.box-footer -->
+                    </div>
+                    
+                </div>
+                <div class="col-sm-6">
+                   <div class="box box-info">
+                    <div class="box-header with-border">
+                    <h3 class="box-title">Billing Cart</h3><br>
+                    
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                    <form id="billing_form" method="post" action="addSalesAction" >  
+                    Customers Name: <input type="text" name="customer_info" /> 
+                    <div class="table-responsive">
+                        
+                        <table id="billing_table" class="table no-margin">
+                            <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Name</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <hr>
+                    <div class="table-responsive pull-right" style="padding-right:50px;">
+                        <b>Total Rs.<span id="total_amount">0</span></b>
+                        <input name="total" type="hidden" id="form_total_amount" value="0" />
+                    </div>
+                    </form>
+                    <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                    
+                    <a onClick="chceckout()" href="javascript:void(0)" class="btn btn-sm btn-success btn-flat pull-right">Checkout</a>
+                    <script>
+                        function chceckout(){
+                            $("#billing_form").submit();
+                        }
+                        
+                    </script>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+                    
+                </div>
+            </div>
+        </div>
+</div>
+  <!-- /.content-wrapper -->
+
+<% include templates/footer.ejs %>
